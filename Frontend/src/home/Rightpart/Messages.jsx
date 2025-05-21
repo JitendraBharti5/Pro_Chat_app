@@ -1,52 +1,44 @@
 import React, { useEffect, useRef } from "react";
 import Message from "./Message";
 import useGetMessage from "../../context/useGetMessage.js";
-import Loading from "../../components/Loading.jsx";
 import useGetSocketMessage from "../../context/useGetSocketMessage.js";
-function Messages() {
-  const { loading, messages } = useGetMessage();
-  useGetSocketMessage(); // listing incoming messages
-  console.log(messages);
+import Loading from "../../components/Loading.jsx";
 
-  const lastMsgRef = useRef();
+export default function Messages() {
+  const { loading, messages } = useGetMessage();
+  useGetSocketMessage();
+  const endRef = useRef();
+
   useEffect(() => {
-    setTimeout(() => {
-      if (lastMsgRef.current) {
-        lastMsgRef.current.scrollIntoView({
-          behavior: "smooth",
-        });
-      }
-    }, 100);
+    if (endRef.current) {
+      endRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
+
   return (
     <div
-      className="flex-1 overflow-y-auto"
-      style={{ minHeight: "calc(92vh - 8vh)" }}
+      className="flex-1 overflow-y-auto px-2 py-3 bg-slate-900
+                 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800"
     >
       {loading ? (
-        <Loading />
-      ) : (
-        messages.length > 0 &&
-        messages.map((message) => (
-          <div key={message._id} ref={lastMsgRef}>
-            <Message message={message} />
-          </div>
-        ))
-      )}
-
-      {!loading && messages.length === 0 && (
-        <div>
-          <p className="text-center mt-[20%]">
-            Say! Hi to start the conversation
-          </p>
-          <div class="flex  justify-center items-center">
-          <img src="pro-remov.png" alt="logo ProChat" width="200" height="300"></img>
-          </div>
+        <div className="flex h-full items-center justify-center">
+          <Loading />
         </div>
-         
+      ) : messages.length ? (
+        messages.map((msg, i) => (
+          <Message key={msg._id} message={msg} />
+        ))
+      ) : (
+        <div className="text-center text-gray-500 mt-20">
+          <p className="mb-4">Say <span className="italic">“Hi”</span> to start</p>
+          <img
+            src="pro-remov.png"
+            alt="ProChat Logo"
+            className="mx-auto w-48 opacity-60"
+          />
+        </div>
       )}
+      <div ref={endRef} />
     </div>
   );
 }
-
-export default Messages;
