@@ -1,44 +1,42 @@
 import React, { useState } from "react";
-import { FaSearch } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
-function Logout() {
+
+export default function Logout() {
   const [loading, setLoading] = useState(false);
-  const handleLogout = async () => {
+
+  const logout = async () => {
     setLoading(true);
     try {
-      const res = await axios.post("/api/user/logout");
+      await axios.post("/api/user/logout");
       localStorage.removeItem("ChatApp");
       Cookies.remove("jwt");
-      setLoading(false);
-      toast.success("Logged out successfully");
+      toast.success("Logged out");
       window.location.reload();
-    } catch (error) {
-      console.log("Error in Logout", error);
-      toast.error("Error in logging out");
+    } catch {
+      toast.error("Logout failed");
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
-    <>
-      <hr />
-      <div className=" h-[5vh] bg-transparent flex">
-        <div>
-          <BiLogOutCircle
-            className="text-5xl text-white hover:bg-slate-700 duration-300 cursor-pointer rounded-full p-2 ml-2 mt-1"
-            onClick={handleLogout}
-          />
-        </div>
-        <h2 className="text-2xl text-center p-2 ml-2 mt-1 ">
-            Pro<span className="text-green-500 font-semibold">Chat</span>
-          </h2>
+    <div className="p-4 bg-slate-800 border-t border-slate-700 flex items-center justify-between">
+      <button
+        onClick={logout}
+        disabled={loading}
+        className="flex items-center space-x-2 text-red-400 hover:text-red-500 disabled:opacity-50"
+      >
+        <BiLogOutCircle className="text-2xl" />
+        <span className="font-medium">Logout</span>
+      </button>
+      <div className="text-xs text-gray-500">
+        Pro<span className="text-green-400">Chat</span>  
+        <br />
+        A Product from JITENDRA Pvt. Ltd.
       </div>
-      <div className="">
-          <p className="pl-2 pr-2 pt-2 ml-2 mt-1">A Product From JITENDRA Private Limited</p>
-          </div>
-    </>
+    </div>
   );
 }
-
-export default Logout;
