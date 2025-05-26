@@ -1,27 +1,65 @@
 import React, { useEffect } from "react";
-import useConversation from "../../zustand/useConversation.js";
 import Chatuser from "./Chatuser";
 import Messages from "./Messages";
 import Typesend from "./Typesend";
-import NoChatSelected from "./NoChatSelected";
+import useConversation from "../../zustand/useConversation.js";
+import { useAuth } from "../../context/AuthProvider.jsx";
+import { CiMenuFries } from "react-icons/ci";
 
-export default function Right() {
+function Right() {
   const { selectedConversation, setSelectedConversation } = useConversation();
-
-  // clear old conversation when unmounting
-  useEffect(() => () => setSelectedConversation(null), [setSelectedConversation]);
-
+  useEffect(() => {
+    return setSelectedConversation(null);
+  }, [setSelectedConversation]);
   return (
-    <section className="flex flex-col w-full h-screen text-gray-300 bg-slate-900">
-      {selectedConversation ? (
-        <>
-          <Chatuser />
-          <Messages />
-          <Typesend />
-        </>
-      ) : (
-        <NoChatSelected />
-      )}
-    </section>
+    <div className="w-full bg-slate-900 text-gray-300">
+      <div>
+        {!selectedConversation ? (
+          <NoChatSelected />
+        ) : (
+          <>
+            <Chatuser />
+            <div
+              className=" flex-1 overflow-y-auto"
+              style={{ maxHeight: "calc(92vh - 8vh)" }}
+            >
+              <Messages />
+            </div>
+            <Typesend />
+          </>
+        )}
+      </div>
+    </div>
   );
 }
+
+export default Right;
+
+const NoChatSelected = () => {
+  const [authUser] = useAuth();
+  console.log(authUser);
+  return (
+    <>
+      <div className="relative">
+        <label
+          htmlFor="my-drawer-2"
+          className="btn btn-ghost drawer-button lg:hidden absolute left-5"
+        >
+          <CiMenuFries className="text-white text-xl" />
+        </label>
+        <div className="flex h-screen items-center justify-center">
+          <h1 className="text-center">
+            Welcome{" "}
+            <span className="font-semibold text-xl">
+              {authUser.user.fullname}
+            </span>
+            <br />
+            please start conversation by selecting anyone to
+            your contacts
+          </h1>
+          <img src="pro-remov.png" alt="logo ProChat" width="500" height="600"></img>
+        </div>
+      </div>
+    </>
+  );
+};

@@ -1,39 +1,32 @@
 import React from "react";
-import useConversation from "../../zustand/useConversation";
-import { useSocketContext } from "../../context/SocketContext";
+import useConversation from "../../zustand/useConversation.js";
+import { useSocketContext } from "../../context/SocketContext.jsx";
 
-export default function User({ user }) {
+function User({ user }) {
   const { selectedConversation, setSelectedConversation } = useConversation();
-  const { onlineUsers } = useSocketContext();
-
   const isSelected = selectedConversation?._id === user._id;
+  const { socket, onlineUsers } = useSocketContext();
   const isOnline = onlineUsers.includes(user._id);
-
   return (
     <div
+      className={`hover:bg-slate-600 duration-300 ${
+        isSelected ? "bg-slate-700" : ""
+      }`}
       onClick={() => setSelectedConversation(user)}
-      className={`
-        flex items-center px-4 py-3 cursor-pointer transition 
-        ${isSelected ? "bg-slate-700" : "hover:bg-slate-800"}
-      `}
     >
-      <div className="relative">
-        <img
-          src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-          alt={user.fullname}
-          className="w-12 h-12 rounded-full object-cover"
-        />
-        <span
-          className={`
-            absolute bottom-0 right-0 w-3 h-3 rounded-full border-2
-            ${isOnline ? "bg-green-400 border-slate-900" : "bg-gray-500 border-slate-900"}
-          `}
-        />
-      </div>
-      <div className="ml-4">
-        <p className="font-semibold">{user.fullname}</p>
-        <p className="text-sm text-gray-400">{user.email}</p>
+      <div className="flex space-x-4 px-8 py-3 hover:bg-slate-700 duration-300 cursor-pointer">
+        <div className={`avatar ${isOnline ? "online" : ""}`}>
+        <div className="w-24 rounded-full">
+    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+  </div>
+        </div>
+        <div>
+          <h1 className=" font-bold">{user.fullname}</h1>
+          <span>{user.email}</span>
+        </div>
       </div>
     </div>
   );
 }
+
+export default User;

@@ -1,22 +1,21 @@
 import React from "react";
 import Search from "./Search";
-import UserList from "./Users";
+import Users from "./Users";
 import Logout from "./Logout";
 
-export default function Left() {
+function Left() {
   return (
-    <aside className="flex flex-col w-80 h-screen bg-slate-900 text-gray-200">
-      <header className="sticky top-0 z-10">
-        <Search />
-      </header>
-
-      <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800">
-        <UserList />
-      </main>
-
-      <footer className="sticky bottom-0 z-10">
-        <Logout />
-      </footer>
-    </aside>
+    <div className="w-full   bg-black text-gray-300">
+      <Search />
+      <div
+        className=" flex-1  overflow-y-auto"
+        style={{ minHeight: "calc(84vh - 10vh)" }}
+      >
+        <Users />
+      </div>
+      <Logout />
+    </div>
   );
 }
+
+export default Left;
